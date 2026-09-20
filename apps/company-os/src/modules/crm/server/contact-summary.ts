@@ -1,4 +1,4 @@
-import { Effect } from "effect"
+import { Config, Effect } from "effect"
 
 import { ContactSummary } from "#/modules/crm/model/contact-summary.ts"
 import { Contact } from "#/modules/crm/model/contact.ts"
@@ -8,8 +8,14 @@ import {
   defineControllerServer,
 } from "#/runtime/server/index.ts"
 
+/** Hosts without a Codex CLI (plain containers, workerd) turn agent runs off. */
+const agentRunsEnabled = Config.Boolean("AGENT_CONTROLLERS_ENABLED").pipe(
+  Config.withDefault(true)
+)
+
 export const contactSummary = defineControllerServer(ContactSummary, {
   reconcile: Effect.fn("contactSummary.reconcile")(function* (contactId) {
+    if (!(yield* agentRunsEnabled)) return
     const database = yield* Database
     const contact = yield* database
       .repository(Contact)

@@ -16,6 +16,7 @@
     "./config": "./src/app.config.ts"
   },
   "scripts": {
+    "auth:migrate": "tsx tools/auth-migrate.ts",
     "build": "vite build",
     "db:check": "tsx tools/check-db-schema.ts",
     "db:dump": "tsx tools/db-dump.ts",
@@ -49,11 +50,13 @@
     "@tanstack/react-start": "catalog:",
     "@tanstack/react-table": "catalog:",
     "@tanstack/react-virtual": "^3.14.10",
+    "better-auth": "catalog:",
     "effect": "catalog:",
     "file-type": "22.0.2",
     "image-size": "^2.0.2",
     "jose": "6.2.12",
     "lucide-react": "catalog:",
+    "pg": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "typeid-js": "catalog:"
@@ -62,6 +65,7 @@
     "@continual/tanstack-start": "catalog:",
     "@effect/vitest": "catalog:",
     "@types/node": "catalog:",
+    "@types/pg": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "tsx": "catalog:",

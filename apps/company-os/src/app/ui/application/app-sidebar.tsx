@@ -22,8 +22,14 @@ import {
   useSidebar,
 } from "@company/ui/sidebar"
 import { Link, useMatchRoute } from "@tanstack/react-router"
-import { BracesIcon, ChevronsUpDownIcon, SettingsIcon } from "lucide-react"
+import {
+  BracesIcon,
+  ChevronsUpDownIcon,
+  LogOutIcon,
+  SettingsIcon,
+} from "lucide-react"
 
+import { authClient, usesBetterAuth } from "#/app/client/auth-client.ts"
 import { BrandMark } from "#/app/customization/brand.tsx"
 import { appConfig } from "#/app/customization/config.ts"
 import { operateNavigation } from "#/app/customization/navigation.ts"
@@ -151,6 +157,17 @@ export function AppSidebar() {
                   <SettingsIcon />
                   Settings
                 </DropdownMenuItem>
+                {usesBetterAuth ? (
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      await authClient.signOut()
+                      window.location.assign("/sign-in")
+                    }}
+                  >
+                    <LogOutIcon />
+                    Sign out
+                  </DropdownMenuItem>
+                ) : null}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

@@ -1,5 +1,6 @@
 import { Config, Effect, Layer } from "effect"
 
+import { betterAuthIdentityProviderLayer } from "#/app/server/auth/better-auth-identity-provider.ts"
 import { continualIdentityProviderLayer } from "#/app/server/auth/identity-provider.ts"
 import { jwtIdentityProviderLayer } from "#/app/server/auth/jwt-identity-provider.ts"
 
@@ -11,8 +12,9 @@ export const identityProviderLayer = Layer.unwrap(
     )
     if (provider === "continual") return continualIdentityProviderLayer
     if (provider === "jwt") return jwtIdentityProviderLayer
+    if (provider === "betterAuth") return betterAuthIdentityProviderLayer
     return yield* Effect.fail(
-      new Error("IDENTITY_PROVIDER must be continual or jwt.")
+      new Error("IDENTITY_PROVIDER must be continual, jwt, or betterAuth.")
     )
   })
 )

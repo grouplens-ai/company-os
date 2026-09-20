@@ -26,6 +26,7 @@ import { Route as AppReportsIndexRouteImport } from './routes/_app/reports/index
 import { Route as AppModulesIndexRouteImport } from './routes/_app/modules/index'
 import { Route as AppDeveloperIndexRouteImport } from './routes/_app/developer/index'
 import { Route as ApiV1SplatRouteImport } from './routes/api/v1/$'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppToolsToolIdRouteImport } from './routes/_app/tools/$toolId'
 import { Route as AppSettingsProfileRouteImport } from './routes/_app/settings/profile'
 import { Route as AppSettingsAppearanceRouteImport } from './routes/_app/settings/appearance'
@@ -126,6 +127,11 @@ const AppDeveloperIndexRoute = AppDeveloperIndexRouteImport.update({
 const ApiV1SplatRoute = ApiV1SplatRouteImport.update({
   id: '/api/v1/$',
   path: '/api/v1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppToolsToolIdRoute = AppToolsToolIdRouteImport.update({
@@ -242,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/settings/appearance': typeof AppSettingsAppearanceRoute
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tools/$toolId': typeof AppToolsToolIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/v1/$': typeof ApiV1SplatRoute
   '/developer/': typeof AppDeveloperIndexRoute
   '/modules/': typeof AppModulesIndexRoute
@@ -275,6 +282,7 @@ export interface FileRoutesByTo {
   '/settings/appearance': typeof AppSettingsAppearanceRoute
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tools/$toolId': typeof AppToolsToolIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/v1/$': typeof ApiV1SplatRoute
   '/developer': typeof AppDeveloperIndexRoute
   '/modules': typeof AppModulesIndexRoute
@@ -312,6 +320,7 @@ export interface FileRoutesById {
   '/_app/settings/appearance': typeof AppSettingsAppearanceRoute
   '/_app/settings/profile': typeof AppSettingsProfileRoute
   '/_app/tools/$toolId': typeof AppToolsToolIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/v1/$': typeof ApiV1SplatRoute
   '/_app/developer/': typeof AppDeveloperIndexRoute
   '/_app/modules/': typeof AppModulesIndexRoute
@@ -349,6 +358,7 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/profile'
     | '/tools/$toolId'
+    | '/api/auth/$'
     | '/api/v1/$'
     | '/developer/'
     | '/modules/'
@@ -382,6 +392,7 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/profile'
     | '/tools/$toolId'
+    | '/api/auth/$'
     | '/api/v1/$'
     | '/developer'
     | '/modules'
@@ -418,6 +429,7 @@ export interface FileRouteTypes {
     | '/_app/settings/appearance'
     | '/_app/settings/profile'
     | '/_app/tools/$toolId'
+    | '/api/auth/$'
     | '/api/v1/$'
     | '/_app/developer/'
     | '/_app/modules/'
@@ -441,6 +453,7 @@ export interface RootRouteChildren {
   ApiHealthRoute: typeof ApiHealthRoute
   ApiMcpRoute: typeof ApiMcpRoute
   ApiOpenapiRoute: typeof ApiOpenapiRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiV1SplatRoute: typeof ApiV1SplatRoute
   ApiV1AssetsAssetIdContentRoute: typeof ApiV1AssetsAssetIdContentRoute
 }
@@ -564,6 +577,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/$'
       fullPath: '/api/v1/$'
       preLoaderRoute: typeof ApiV1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/tools/$toolId': {
@@ -774,6 +794,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthRoute: ApiHealthRoute,
   ApiMcpRoute: ApiMcpRoute,
   ApiOpenapiRoute: ApiOpenapiRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiV1SplatRoute: ApiV1SplatRoute,
   ApiV1AssetsAssetIdContentRoute: ApiV1AssetsAssetIdContentRoute,
 }

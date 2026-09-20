@@ -1,0 +1,15 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "RAILPACK",
+    "buildCommand": "pnpm install --frozen-lockfile && pnpm build --filter=company-os"
+  },
+  "deploy": {
+    "startCommand": "node apps/company-os/.output/server/index.mjs",
+    "preDeployCommand": "pnpm --filter company-os db:migrate && pnpm --filter company-os auth:migrate",
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 120,
+    "restartPolicyType": "ON_FAILURE",
+    "numReplicas": 1
+  }
+}

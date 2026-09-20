@@ -6,6 +6,9 @@ import { loadEnvFile } from "node:process"
 import { defineConfig } from "@continual/tanstack-start/vite"
 
 export default defineConfig({
+  // Long-lived Node hosts (containers, Railway) build with NITRO_PRESET=node_server;
+  // the default stays Continual's request-scoped workerd deployment.
+  nitro: { preset: process.env.NITRO_PRESET ?? "cloudflare_module" },
   tanstackStart: {
     importProtection: {
       behavior: "error",
