@@ -4,12 +4,14 @@ import { ContactSummary } from "#/modules/crm/model/contact-summary.ts"
 import { Contact } from "#/modules/crm/model/contact.ts"
 import {
   Agent,
+  agentControllersEnabled,
   Database,
   defineControllerServer,
 } from "#/runtime/server/index.ts"
 
 export const contactSummary = defineControllerServer(ContactSummary, {
   reconcile: Effect.fn("contactSummary.reconcile")(function* (contactId) {
+    if (!(yield* agentControllersEnabled)) return
     const database = yield* Database
     const contact = yield* database
       .repository(Contact)
