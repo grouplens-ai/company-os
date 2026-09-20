@@ -1,4 +1,5 @@
 export { Agent, AgentError, AgentSession } from "#/runtime/server/agent.ts"
+export { agentControllersEnabled } from "#/runtime/server/agent-controllers.ts"
 export type {
   AgentRunOptions,
   AgentSessionReference,

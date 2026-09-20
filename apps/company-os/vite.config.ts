@@ -2,13 +2,21 @@
 
 import { existsSync } from "node:fs"
 import { loadEnvFile } from "node:process"
+import { fileURLToPath } from "node:url"
 
 import { defineConfig } from "@continual/tanstack-start/vite"
+
+const resolveApp = (path: string) =>
+  fileURLToPath(new URL(path, import.meta.url))
+const nodePreset = process.env.NITRO_PRESET
 
 export default defineConfig({
   // Long-lived Node hosts (containers, Railway) build with NITRO_PRESET=node_server;
   // the default stays Continual's request-scoped workerd deployment.
-  nitro: { preset: process.env.NITRO_PRESET ?? "cloudflare_module" },
+  nitro:
+    nodePreset === undefined
+      ? { preset: "cloudflare_module" }
+      : { preset: nodePreset, noExternals: true },
   tanstackStart: {
     importProtection: {
       behavior: "error",
@@ -30,8 +38,34 @@ export default defineConfig({
           loadEnvFile(new URL(file, import.meta.url))
 
     return {
-      // Use Shiki's portable WASM entry; Nitro's unwasm condition selects a raw file.
-      resolve: { alias: { "shiki/wasm": "shiki/dist/wasm.mjs" } },
+      resolve: {
+        alias: [
+          // Use Shiki's portable WASM entry; Nitro's unwasm condition selects a raw file.
+          { find: "shiki/wasm", replacement: "shiki/dist/wasm.mjs" },
+          // Node builds otherwise resolve tslib's CommonJS entry, whose bundled
+          // interop leaves the helper namespace undefined at runtime.
+          { find: /^tslib$/, replacement: "tslib/tslib.es6.mjs" },
+          ...(nodePreset === undefined
+            ? []
+            : [
+                // These CommonJS shims require React at runtime, which loads a
+                // second copy with no hook dispatcher. The ESM ports bundle with
+                // the rest of the graph and use React's own implementation.
+                {
+                  find: /^use-sync-external-store\/shim(\/index(\.js)?)?$/,
+                  replacement: resolveApp(
+                    "./src/app/client/vendor/use-sync-external-store-shim.ts"
+                  ),
+                },
+                {
+                  find: /^use-sync-external-store\/(shim\/)?with-selector(\.js)?$/,
+                  replacement: resolveApp(
+                    "./src/app/client/vendor/use-sync-external-store-with-selector.ts"
+                  ),
+                },
+              ]),
+        ],
+      },
       server: {
         // A moved port breaks VITE_APP_URL, MCP origin checks, and muscle memory; fail instead.
         strictPort: true,

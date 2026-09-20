@@ -63,6 +63,12 @@
           "src/runtime/access/model/index.ts",
           "src/runtime/platform/model/index.ts",
           "src/modules/*/{model,server,ui,seeds}/index.ts"
+        ],
+        "ignore": [
+          "src/app/client/vendor/**"
+        ],
+        "ignoreDependencies": [
+          "tslib"
         ]
       }
     }

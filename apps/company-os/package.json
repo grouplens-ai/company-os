@@ -59,6 +59,7 @@
     "pg": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "tslib": "catalog:",
     "typeid-js": "catalog:"
   },
   "devDependencies": {
