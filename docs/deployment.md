@@ -52,8 +52,18 @@ authenticated read and write after deployment. Satellites set
 ## Self-hosted Node deployment with Better Auth
 
 A long-lived Node host builds with `NITRO_PRESET=node_server` and serves
-`apps/company-os/.output/server/index.mjs`. `railway.json` records that build,
-start, and pre-deploy contract for Railway; other hosts need the same three steps.
+`apps/company-os/.output/server/index.mjs`. Turbo forwards that variable through
+the `build` task, so set it on the host that runs `pnpm build`. Railway keeps the
+three commands on the service itself:
+
+```
+build:       pnpm install --frozen-lockfile && pnpm build --filter=company-os
+pre-deploy:  pnpm --filter company-os db:migrate && pnpm --filter company-os auth:migrate
+start:       node apps/company-os/.output/server/index.mjs
+```
+
+Migrations belong before the process starts: an app that boots first initializes
+its cluster tables, and the migration runner then refuses a schema it did not create.
 
 Set `IDENTITY_PROVIDER=betterAuth` and `VITE_IDENTITY_PROVIDER=betterAuth` to verify
 credentials Better Auth stores in this deployment's database. `AUTH_ALLOWED_EMAILS`
