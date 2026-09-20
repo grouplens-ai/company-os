@@ -49,6 +49,23 @@ point for retained data; an app rollback does not restore a database. Verify `/h
 authenticated read and write after deployment. Satellites set
 `COMPANY_OS_URL` to the central app and forward verified identity headers.
 
+## Self-hosted Node deployment with Better Auth
+
+A long-lived Node host builds with `NITRO_PRESET=node_server` and serves
+`apps/company-os/.output/server/index.mjs`. `railway.json` records that build,
+start, and pre-deploy contract for Railway; other hosts need the same three steps.
+
+Set `IDENTITY_PROVIDER=betterAuth` and `VITE_IDENTITY_PROVIDER=betterAuth` to verify
+credentials Better Auth stores in this deployment's database. `AUTH_ALLOWED_EMAILS`
+is the admission list: an empty list admits nobody, and an admitted address can both
+create its account and sign in. `AUTH_BASE_URL` (or `VITE_APP_URL`) pins the public
+origin that issues session cookies. Apply both schemas before serving:
+`pnpm --filter company-os db:migrate` for business storage and
+`pnpm --filter company-os auth:migrate` for the credential tables.
+
+Set `AGENT_CONTROLLERS_ENABLED=false` on hosts without a Codex CLI; the embedded
+controllers otherwise fail every reconciliation.
+
 ## Controller hosting
 
 The controller prototype runs inside the long-lived Node web process. It starts with the application's
